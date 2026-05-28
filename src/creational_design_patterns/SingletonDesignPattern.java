@@ -2,13 +2,40 @@ package creational_design_patterns;
 
 // Eager Loading - Object initialization happens at the class loading level
 // Thread Safe
+//class JudgeAnalytics{
+//    private static final JudgeAnalytics JUDGE_ANALYTICS = new JudgeAnalytics();
+//    private int run = 0;
+//    private int submit = 0;
+//    private JudgeAnalytics(){}
+//    public static JudgeAnalytics getJudgeAnalyticsInstance(){
+//        return JUDGE_ANALYTICS;
+//    }
+//    public void countRun(){
+//        run++;
+//    }
+//    public void countSubmit(){
+//        submit++;
+//    }
+//    public int getRunCount(){
+//        return run;
+//    }
+//    public int getSubmitCount(){
+//        return submit;
+//    }
+//}
+
+// Lazy Loading - instance is created during the execution time.
+// Thread Un-Safe
 class JudgeAnalytics{
-    private static final JudgeAnalytics JUDGE_ANALYTICS = new JudgeAnalytics();
+    private static JudgeAnalytics judgeAnalytics;
     private int run = 0;
     private int submit = 0;
     private JudgeAnalytics(){}
     public static JudgeAnalytics getJudgeAnalyticsInstance(){
-        return JUDGE_ANALYTICS;
+        if(judgeAnalytics == null){
+            judgeAnalytics = new JudgeAnalytics();
+        }
+        return judgeAnalytics;
     }
     public void countRun(){
         run++;
