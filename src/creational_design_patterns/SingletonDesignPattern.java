@@ -56,21 +56,46 @@ package creational_design_patterns;
 
 // Double - Checked Locking
 // It uses the volatile keyword to ensure that changes to the instance variable are immediately visible to other threads.
+//class JudgeAnalytics{
+//    private static volatile JudgeAnalytics judgeAnalytics;
+//    private int run = 0;
+//    private int submit = 0;
+//    private JudgeAnalytics(){}
+//    // Critical Section
+//    public static JudgeAnalytics getJudgeAnalyticsInstance(){
+//        if(judgeAnalytics == null){
+//            synchronized (JudgeAnalytics.class) {
+//                if(judgeAnalytics == null) {
+//                    judgeAnalytics = new JudgeAnalytics();
+//                }
+//            }
+//        }
+//        return judgeAnalytics;
+//    }
+//    public void countRun(){
+//        run++;
+//    }
+//    public void countSubmit(){
+//        submit++;
+//    }
+//    public int getRunCount(){
+//        return run;
+//    }
+//    public int getSubmitCount(){
+//        return submit;
+//    }
+//}
+
+// Bill Pugh Singleton
 class JudgeAnalytics{
-    private static volatile JudgeAnalytics judgeAnalytics;
     private int run = 0;
     private int submit = 0;
     private JudgeAnalytics(){}
-    // Critical Section
+    private static class Holder{
+        private static final JudgeAnalytics JUDGE_ANALYTICS = new JudgeAnalytics();
+    }
     public static JudgeAnalytics getJudgeAnalyticsInstance(){
-        if(judgeAnalytics == null){
-            synchronized (JudgeAnalytics.class) {
-                if(judgeAnalytics == null) {
-                    judgeAnalytics = new JudgeAnalytics();
-                }
-            }
-        }
-        return judgeAnalytics;
+        return Holder.JUDGE_ANALYTICS;
     }
     public void countRun(){
         run++;
