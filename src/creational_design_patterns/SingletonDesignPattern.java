@@ -87,36 +87,64 @@ package creational_design_patterns;
 //}
 
 // Bill Pugh Singleton
-class JudgeAnalytics{
-    private int run = 0;
-    private int submit = 0;
-    private JudgeAnalytics(){}
-    private static class Holder{
-        private static final JudgeAnalytics JUDGE_ANALYTICS = new JudgeAnalytics();
+//class JudgeAnalytics{
+//    private int run = 0;
+//    private int submit = 0;
+//    private JudgeAnalytics(){}
+//    private static class Holder{
+//        private static final JudgeAnalytics JUDGE_ANALYTICS = new JudgeAnalytics();
+//    }
+//    public static JudgeAnalytics getJudgeAnalyticsInstance(){
+//        return Holder.JUDGE_ANALYTICS;
+//    }
+//    public void countRun(){
+//        run++;
+//    }
+//    public void countSubmit(){
+//        submit++;
+//    }
+//    public int getRunCount(){
+//        return run;
+//    }
+//    public int getSubmitCount(){
+//        return submit;
+//    }
+//}
+
+// Enum Singleton
+// When JVM loads:
+//enum CompilerStats {
+//    INSTANCE;
+//}
+// Java internally creates:
+// public static final CompilerStats INSTANCE = new CompilerStats();
+// Can Enum Have Constructor? Yes But constructor is always: private internally
+enum CompilerStats{
+    INSTANCE;
+
+    private int runCount = 0;
+    private int submitCount = 0;
+
+    public void incrementRun(){
+        runCount++;
     }
-    public static JudgeAnalytics getJudgeAnalyticsInstance(){
-        return Holder.JUDGE_ANALYTICS;
+    public void incrementSubmit(){
+        submitCount++;
     }
-    public void countRun(){
-        run++;
-    }
-    public void countSubmit(){
-        submit++;
-    }
-    public int getRunCount(){
-        return run;
-    }
-    public int getSubmitCount(){
-        return submit;
+    public void displayStats(){
+        System.out.println("RUN Count:    " + runCount);
+        System.out.println("SUBMIT Count: " + submitCount);
     }
 }
-
 public class SingletonDesignPattern {
     static void main() {
         System.out.println("Singleton Design Pattern!");
-        JudgeAnalytics judgeAnalytics1 = JudgeAnalytics.getJudgeAnalyticsInstance();
-        JudgeAnalytics judgeAnalytics2 = JudgeAnalytics.getJudgeAnalyticsInstance();
-        System.out.println(judgeAnalytics1);
-        System.out.println(judgeAnalytics2);
+        CompilerStats stats1= CompilerStats.INSTANCE;
+        stats1.incrementRun();
+        stats1.incrementRun();
+        stats1.incrementSubmit();
+
+        CompilerStats stats2 = CompilerStats.INSTANCE;
+        stats2.displayStats();
     }
 }
