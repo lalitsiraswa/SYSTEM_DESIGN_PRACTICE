@@ -34,23 +34,60 @@ class GSTInvoice implements Invoice{
 // 1. Handling the object creation logic.
 // 2. Processing the payments.
 // 3. Generating the invoices.
-class CheckoutService{
-    private String gatewayType;
-    public CheckoutService(String gatewayType){
-        this.gatewayType = gatewayType;
+//class CheckoutService{
+//    private String gatewayType;
+//    public CheckoutService(String gatewayType){
+//        this.gatewayType = gatewayType;
+//    }
+//
+//    public void checkout(double amount){
+//        if(gatewayType.equals("razorpay")){
+//            PaymentGateway paymentGateway = new RazorpayGateway();
+//            paymentGateway.processPayment(amount);
+//        }
+//        else if(gatewayType.equals("payu")){
+//            PaymentGateway paymentGateway = new PayUGateway();
+//            paymentGateway.processPayment(amount);
+//        }
+//        Invoice invoice = new GSTInvoice();
+//        invoice.generateInvoice();
+//    }
+//}
+
+class IndiaFactory{
+    public static PaymentGateway createPaymentGateway(String gatewayType) throws IllegalAccessException {
+        return switch (gatewayType.toLowerCase()) {
+            case "razorpay" -> new RazorpayGateway();
+            case "payu" -> new PayUGateway();
+            default -> throw new IllegalAccessException("UnSupported payment gateway in india: " + gatewayType);
+        };
     }
 
-    public void checkout(double amount){
-        if(gatewayType.equals("razorpay")){
-            PaymentGateway paymentGateway = new RazorpayGateway();
+    public static Invoice createInvoice(){
+        return new GSTInvoice();
+    }
+}
+// Now think we have to dimplement the CheckoutService for US also.- PROBLEM
+// Whenever we have to deal with multiple factories and object creations, then we have to use Abstract Factory Pattern.
+class CheckoutService{
+    private String gatewayType;
+    private String countryCode;
+    public CheckoutService(String gatewayType, String countryCode){
+        this.gatewayType = gatewayType;
+        this.countryCode = countryCode;
+    }
+
+    public void checkout(double amount) throws IllegalAccessException {
+        // We can use if else condition, but it will again break the SOLID principles.
+        if(countryCode == "INDIA") {
+            PaymentGateway paymentGateway = IndiaFactory.createPaymentGateway(gatewayType);
             paymentGateway.processPayment(amount);
+            Invoice invoice = IndiaFactory.createInvoice();
+            invoice.generateInvoice();
         }
-        else if(gatewayType.equals("payu")){
-            PaymentGateway paymentGateway = new PayUGateway();
-            paymentGateway.processPayment(amount);
+        else if(countryCode == "US"){
+            // DO THIS
         }
-        Invoice invoice = new GSTInvoice();
-        invoice.generateInvoice();
     }
 }
 
