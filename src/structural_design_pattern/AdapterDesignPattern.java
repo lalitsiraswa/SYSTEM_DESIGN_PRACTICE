@@ -30,11 +30,27 @@ class RazorpayAPI{
         System.out.println("Paid ₹" + amountInRupees + " using Razorpay for invoice: " + invoiceID);
     }
 }
+
+class RazorpayAdapter implements PaymentGateway{
+    private RazorpayAPI razorpayAPI;
+
+    public RazorpayAdapter(RazorpayAPI razorpayAPI){
+        this.razorpayAPI = razorpayAPI;
+    }
+
+    @Override
+    public void pay(String orderId, double amount) {
+        razorpayAPI.makePayment(orderId, amount);
+    }
+}
+
 // If we are planning to shift to Razorpay it should be easy, but currently it is hard, the RazorpayAPI is not implementing the PaymentGateway, it
 // has its own method.
 public class AdapterDesignPattern {
     static void main() {
-        CheckoutService checkoutService = new CheckoutService(new PayUGateway());
+        // CheckoutService checkoutServicePayU = new CheckoutService(new PayUGateway());
+        PaymentGateway paymentGateway = new RazorpayAdapter(new RazorpayAPI());
+        CheckoutService checkoutService = new CheckoutService(paymentGateway);
         checkoutService.checkout("3108", 1999);
     }
 }
