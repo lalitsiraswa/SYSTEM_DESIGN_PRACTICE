@@ -66,11 +66,11 @@ class MovieBookingFacadeWithBuilderPattern{
     private final String userEmail;
     private final double amount;
     private final int points;
-    private PaymentService paymentService;
-    private SeatReservedService seatReservedService;
-    private NotificationService notificationService;
-    private LoyaltyPointService loyaltyPointService;
-    private TicketService ticketService;
+    private final PaymentService paymentService;
+    private final SeatReservedService seatReservedService;
+    private final NotificationService notificationService;
+    private final LoyaltyPointService loyaltyPointService;
+    private final TicketService ticketService;
 
     public MovieBookingFacadeWithBuilderPattern(MovieBookingFacadeWithBuilder bookingFacadeWithBuilder){
         this.accountId = bookingFacadeWithBuilder.accountId;
