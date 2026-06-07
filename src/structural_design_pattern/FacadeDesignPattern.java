@@ -34,7 +34,7 @@ class TicketService{
 
 public class FacadeDesignPattern {
     static void main() {
-        // Booking a movie ticket manually - PROBLEM
+        // Booking a movie ticket manually - PROBLEM - Client itself is handling all the services, and we don't want this.
         PaymentService paymentService = new PaymentService();
         paymentService.makePayment("lalitsiraswa", 599);
         SeatReservedService seatReservedService = new SeatReservedService();
