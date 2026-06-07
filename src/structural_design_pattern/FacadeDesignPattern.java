@@ -32,6 +32,33 @@ class TicketService{
     }
 }
 
+class MovieBookingFacade{
+    private PaymentService paymentService;
+    private SeatReservedService seatReservedService;
+    private NotificationService notificationService;
+    private LoyaltyPointService loyaltyPointService;
+    private TicketService ticketService;
+
+    public MovieBookingFacade(){
+        this.paymentService = new PaymentService();
+        this.seatReservedService = new SeatReservedService();
+        this.notificationService = new NotificationService();
+        this.loyaltyPointService = new LoyaltyPointService();
+        this.ticketService = new TicketService();
+    }
+
+    // Here we can use builder pattern
+    public void bookMovieTicket(String accountId, String movieId, String seatNumber, String userEmail, double amount){
+        paymentService.makePayment(accountId, amount);
+        seatReservedService.reserveSeat(movieId, seatNumber);
+        ticketService.generateTicket(movieId, seatNumber);
+        loyaltyPointService.addPoints(accountId, 760);
+        notificationService.sendBookingConfirmation(userEmail);
+
+        System.out.println("Movie ticket booking completed successfully!");
+    }
+}
+
 public class FacadeDesignPattern {
     static void main() {
         // Booking a movie ticket manually - PROBLEM - Client itself is handling all the services, and we don't want this.
@@ -45,5 +72,9 @@ public class FacadeDesignPattern {
         loyaltyPointService.addPoints("lalitsiraswa", 760);
         TicketService ticketService = new TicketService();
         ticketService.generateTicket("movie3108", "F10");
+        System.out.println();
+        // Using MovieBookingFacade
+        MovieBookingFacade movieBookingFacade = new MovieBookingFacade();
+        movieBookingFacade.bookMovieTicket("lalitsiraswa", "movie3108", "F10", "lalitsiraswa@gmail.com", 599);
     }
 }
