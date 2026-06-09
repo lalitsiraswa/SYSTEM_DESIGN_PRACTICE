@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Product{
-    private String name;
-    private double price;
+    private final String name;
+    private final double price;
 
     public Product(String name, double price){
         this.name = name;
@@ -22,8 +22,8 @@ class Product{
 }
 
 class ProductBundle{
-    private String bundleName;
-    private List<Product> products = new ArrayList<>();
+    private final String bundleName;
+    private final List<Product> products = new ArrayList<>();
 
     public ProductBundle(String bundleName){
         this.bundleName = bundleName;
