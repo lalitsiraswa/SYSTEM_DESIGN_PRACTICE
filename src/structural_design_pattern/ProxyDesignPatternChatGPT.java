@@ -49,6 +49,7 @@ class ProxyImage implements Image{
     }
 }
 
+// CLIENT -> PROXY_IMAGE -> REAL_IMAGE
 public class ProxyDesignPatternChatGPT {
     static void main() {
         // PROBLEM - Even if we never display it.
