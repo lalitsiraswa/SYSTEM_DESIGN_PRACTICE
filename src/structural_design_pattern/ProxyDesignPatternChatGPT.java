@@ -4,7 +4,7 @@ class RealImage{
     private final String fileName;
     public RealImage(String fileName){
         this.fileName = fileName;
-        loadImageFromDisk();
+        loadImageFromDisk(); // Eager execution: data loaded immediately at instantiation
     }
     private void loadImageFromDisk(){
         System.out.println("Loading image: " + fileName);
@@ -42,7 +42,7 @@ class ProxyImage implements Image{
     }
     @Override
     public void display() {
-        if(realImageClone == null){
+        if(realImageClone == null){ // Lazy Loading - Condition checks if resource exists; runs on-demand
             realImageClone = new RealImageClone(fileName);
         }
         realImageClone.display();
