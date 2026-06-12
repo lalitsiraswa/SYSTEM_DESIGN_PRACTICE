@@ -53,7 +53,7 @@ class ProxyImage implements Image{
 public class ProxyDesignPatternChatGPT {
     static void main() {
         // PROBLEM - Even if we never display it.
-        // This wastes resources by loading - calling "loadImageFromDisk"
+        // This waste resources by loading - calling "loadImageFromDisk"
         RealImage image = new RealImage("photo.jpg");
 
         System.out.println("\n");
