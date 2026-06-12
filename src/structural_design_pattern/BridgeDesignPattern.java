@@ -26,7 +26,7 @@ class SmartTVUltraHDPlayer implements PlayQuality{
 }
 
 // PROBLEM - Imagine in future 4K/8k is introduced or a new Device is introduced then we have to create lots of classes.
-// And these all are tightly coupled.
+// And these all are tightly coupled. Streaming platform (Web Player, Mobile Player, Smart TV) and Quality (HD, 4k)
 class Web4KPlayer implements PlayQuality{
     @Override
     public void play(String title) {
