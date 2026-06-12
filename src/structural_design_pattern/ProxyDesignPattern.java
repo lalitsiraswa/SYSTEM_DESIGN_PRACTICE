@@ -30,17 +30,17 @@ class RealVideoDownloaderClone implements VideoDownload{
 }
 
 class CachedVideoDownloader implements VideoDownload{
-    private RealVideoDownloaderClone realVideoDownloader;
-    private Map<String, String> cache;
+    private final RealVideoDownloaderClone realVideoDownloader;
+    // Shared cache
+    private static final Map<String, String> cache = new HashMap<>();
     public CachedVideoDownloader(){
         this.realVideoDownloader = new RealVideoDownloaderClone();
-        this.cache = new HashMap<>();
     }
     @Override
     public String downloadVideo(String videoUrl) {
-        for(Map.Entry<String, String> entry : cache.entrySet()){
-            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
-        }
+//        for(Map.Entry<String, String> entry : cache.entrySet()){
+//            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+//        }
         if(cache.containsKey(videoUrl)){
             System.out.println("Returning cached video for: " + videoUrl);
             return cache.get(videoUrl);
@@ -64,8 +64,17 @@ public class ProxyDesignPattern {
 
         System.out.println("\n");
         // SOLUTION
+        // Also note that because the cache is static, all proxy instances share the same cached data.
+        // This is why client4 and client5 can reuse data downloaded by client3.
         VideoDownload client3 = new CachedVideoDownloader();
         client3.downloadVideo("composite-design-pattern");
         client3.downloadVideo("composite-design-pattern");
+        VideoDownload client4 = new CachedVideoDownloader();
+        client4.downloadVideo("composite-design-pattern");
+        VideoDownload client5 = new CachedVideoDownloader();
+        client5.downloadVideo("composite-design-pattern");
+        client3.downloadVideo("facade-design-pattern");
+        client4.downloadVideo("facade-design-pattern");
+        client4.downloadVideo("facade-design-pattern");
     }
 }
