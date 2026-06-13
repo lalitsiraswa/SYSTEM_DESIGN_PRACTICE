@@ -13,7 +13,7 @@ class Tree{
     // These Properties/Attributes are keep Changing - these are also called Extrinsic Properties/Attributes
     private int x;
     private int y;
-    // Below three Properties/Attributes are Constant/Common - these are also called Intrinsic Properties/Attributes
+    // Below three Properties/Attributes are Co nstant/Common - these are also called Intrinsic Properties/Attributes
     private String name;
     private String color;
     private String texture;
