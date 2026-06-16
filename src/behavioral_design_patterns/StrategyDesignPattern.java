@@ -31,9 +31,54 @@ class PaymentService{
 // APPLE PAY
 // GOOGLE PAY
 // CRYPTO
+
+// SOLUTION
+// Encapsulate each algorithm into its own class.
+
+interface PaymentStrategy{
+    void pay(double amount);
+}
+
+class UpiPayment implements PaymentStrategy{
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paying ₹" + amount + " using UPI");
+    }
+}
+
+class CreditCardPayment implements PaymentStrategy {
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paying ₹" + amount + " using Credit Card");
+    }
+}
+
+class PayPalPayment implements PaymentStrategy {
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paying ₹" + amount + " using PayPal");
+    }
+}
+
+final class PaymentServiceClone{
+    private final PaymentStrategy paymentStrategy;
+    public PaymentServiceClone(PaymentStrategy paymentStrategy){
+        this.paymentStrategy = paymentStrategy;
+    }
+    public void makePayment(double amount){
+        paymentStrategy.pay(amount);
+    }
+}
+
 public class StrategyDesignPattern {
     static void main() {
         PaymentService paymentService = new PaymentService();
         paymentService.pay("UPI", 9999);
+
+        // SOLUTION - CLIENT CODE
+        PaymentServiceClone paymentServiceClone = new PaymentServiceClone(new UpiPayment());
+        paymentServiceClone.makePayment(12999);
+        paymentServiceClone = new PaymentServiceClone(new CreditCardPayment());
+        paymentServiceClone.makePayment(14999);
     }
 }
