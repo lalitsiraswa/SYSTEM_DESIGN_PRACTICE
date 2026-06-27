@@ -54,8 +54,82 @@ class SMSNotification{
 // 2. Compose & Send
 // Everything else is duplicated.
 
+// SOLUTION
+abstract class NotificationSender{
+    // Final template method
+    // Enforcing a flow
+    public final void send(String to, String rawMessage){
+        // Common
+        rateLimitCheck(to);
+        validateRecipient(to);
+        String formatted = formatMessage(rawMessage);
+        preSendAuditLog(to, formatted);
+        // Logic not common
+        String composedMessage = composeMessage(formatted);
+        sendMessage(to, composedMessage);
+        // Common
+        postSendAnalytics(to);
+    }
+
+    // Common Step 1
+    private void rateLimitCheck(String to){
+        System.out.println("Checking rate limits for: " + to);
+    }
+    // Common Step 2
+    private void validateRecipient(String to){
+        System.out.println("Validating recipient: " + to);
+    }
+    // Common Step 3
+    private String formatMessage(String message){
+        return message.trim();
+    }
+    // Common Step 4
+    private void preSendAuditLog(String to, String message){
+        System.out.println("Logging before send: " + message + " to " + to);
+    }
+    // Hook for subclasses
+    protected abstract String composeMessage(String formattedMessage);
+    protected abstract void sendMessage(String to, String message);
+
+    // Common Step 5 (Optional Hook)
+    protected  void postSendAnalytics(String to){
+        System.out.println("Analytics updated for:" + to);
+    }
+}
+
+class EmailNotificationClone extends NotificationSender{
+    @Override
+    protected String composeMessage(String formattedMessage) {
+        return "<html><body<p>" + formattedMessage + "</p></body></html>";
+    }
+    @Override
+    protected void sendMessage(String to, String message) {
+        System.out.println("Sending EMAIL to " + to + " with content:\n" + message);
+    }
+}
+
+class SMSNotificationClone extends NotificationSender{
+    @Override
+    protected String composeMessage(String formattedMessage) {
+        return "[SMS]" + formattedMessage;
+    }
+    @Override
+    protected void sendMessage(String to, String message) {
+        System.out.println("Sending SMS to " + to + " with message: " + message);
+    }
+    // Overriding optional hook
+    @Override
+    protected void postSendAnalytics(String to){
+        System.out.println("Custom SMS analytics for: " + to);
+    }
+}
+
 public class TemplateMethodDesignPattern {
     static void main() {
-
+        NotificationSender emailSender = new EmailNotificationClone();
+        emailSender.send("laviksiraswa@gmail.com", "   Welcome to TUF+!   ");
+        System.out.println();
+        NotificationSender smsSender = new SMSNotificationClone();
+        smsSender.send("7364527586", "Your OTP is 4857");
     }
 }
