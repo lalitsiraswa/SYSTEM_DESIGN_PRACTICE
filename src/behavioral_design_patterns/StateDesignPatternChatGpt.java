@@ -6,7 +6,7 @@ package behavioral_design_patterns;
 // 3. Hard to Maintain
 // We have all the business ligic under same class like: STOP, PLAY, PAUSE.
 // Let's say tomorrow if new state introduces we have to change out existing class that will break Open-Close Principle
-class MediaPlayerContextMediaPlayer {
+class MediaPlayer {
     private String state = "STOPPED";
     public void pressPlay() {
         if(state.equals("STOPPED"))
