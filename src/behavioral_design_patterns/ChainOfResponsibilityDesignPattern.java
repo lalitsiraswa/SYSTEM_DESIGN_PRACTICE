@@ -46,8 +46,82 @@ class SupportService{
 // Monolithic code: All logic in a single class.
 // Not flexible or scalable: Cannot change the order of processing without modifying core logic.
 
+// SOLUTION
+abstract class SupportHandler{
+    protected SupportHandler nextHandler;
+    public void setNextHandler(SupportHandler nextHandler){
+        this.nextHandler = nextHandler;
+    }
+    public abstract void handleRequest(String requestType);
+}
+
+class GeneralSupport extends SupportHandler{
+    @Override
+    public void handleRequest(String requestType) {
+        if(requestType.equals("GENERAL")){
+            System.out.println("GeneralSupport: Handling general query");
+        }
+        else if(nextHandler != null){
+            nextHandler.handleRequest(requestType);
+        }
+    }
+}
+
+class BillingSupport extends SupportHandler{
+    @Override
+    public void handleRequest(String requestType) {
+        if(requestType.equals("REFUND")){
+            System.out.println("BillingSupport: Handling refund request");
+        }
+        else if(nextHandler != null){
+            nextHandler.handleRequest(requestType);
+        }
+    }
+}
+
+class TechnicalSupport extends SupportHandler{
+    @Override
+    public void handleRequest(String requestType) {
+        if(requestType.equals("TECHNICAL")){
+            System.out.println("TechnicalSupport: Handling technical issue");
+        }
+        else if(nextHandler != null){
+            nextHandler.handleRequest(requestType);
+        }
+    }
+}
+
+class DeliverySupport extends SupportHandler{
+    @Override
+    public void handleRequest(String requestType) {
+        if(requestType.equals("DELIVERY")){
+            System.out.println("DeliverySupport: Handling delivery issue");
+        }
+        else if(nextHandler != null){
+            nextHandler.handleRequest(requestType);
+        }
+        else{
+            System.out.println("DeliverySupport: No handler found for request");
+        }
+    }
+}
+
+
 public class ChainOfResponsibilityDesignPattern {
     static void main() {
+        SupportHandler general = new GeneralSupport();
+        SupportHandler billing = new BillingSupport();
+        SupportHandler technical = new TechnicalSupport();
+        SupportHandler delivery = new DeliverySupport();
 
+        // Setting up chain: general -> billing -> technical -> delivery
+        general.setNextHandler(billing);
+        billing.setNextHandler(technical);
+        technical.setNextHandler(delivery);
+
+        general.handleRequest("REFUND");
+        general.handleRequest("DELIVERY");
+        general.handleRequest("TECHNICAL");
+        general.handleRequest("UNKNOWN");
     }
 }
