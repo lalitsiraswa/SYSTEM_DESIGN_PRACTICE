@@ -7,7 +7,7 @@ package multithreading_and_concurrency;
 
 // OrderService class
 class OrderService {
-    // Main method simulates placing an order and executing tasks sequentially
+    // Main method simulates  placing an order and executing tasks sequentially
     public static void main(String[] args) throws InterruptedException {
         System.out.println("Placing order...\n");
         // Send SMS and simulate the delay of 2 seconds
@@ -16,7 +16,7 @@ class OrderService {
         // Send Email and simulate the delay of 3 seconds
         sendEmail();
         System.out.println("Task 2 done.\n");
-        // Calculate ETA (Estimated Time of Arrival) with a delay of 5 seconds
+        // Calculate  ETA (Estimated Time of Arrival) with a delay of 5 seconds
         String eta = calculateETA();
         System.out.println("Order placed. Estimated Time of Arrival: " + eta);
         System.out.println("Task 3 done.\n");
@@ -92,6 +92,44 @@ class ETACalculationThread extends Thread {
         }
     }
 }
+
+// Implementing the Runnable Interface
+// Implementing the Runnable interface for sending SMS
+class SMSThreadRunnable implements Runnable {
+    public void run() {
+        try {
+            Thread.sleep(2000); // 2-second delay for SMS
+            System.out.println("SMS Sent using Runnable.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// Implementing the Runnable interface for sending Email
+class EmailThreadRunnable implements Runnable {
+    public void run() {
+        try {
+            Thread.sleep(3000); // 3-second delay for Email
+            System.out.println("Email Sent using Runnable.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// Implementing the Runnable interface for calculating ETA
+class ETAThreadRunnable implements Runnable {
+    public void run() {
+        try {
+            Thread.sleep(5000); // 5-second delay for ETA calculation
+            System.out.println("ETA Calculated using Runnable. Estimated Time: 25 minutes.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
 public class CreatingAndManagingThreads {
     static void main(String[] args) {
         // Initiating the order processing by calling the OrderService main method
@@ -103,9 +141,12 @@ public class CreatingAndManagingThreads {
 
         // SOLUTION
         // Create thread objects for SMS, Email, and ETA Calculation
-        SMSThread smsThread = new SMSThread();
-        EmailThread emailThread = new EmailThread();
-        ETACalculationThread etaCalculationThread = new ETACalculationThread();
+        // SMSThread smsThread = new SMSThread();
+        Thread smsThread = new Thread(new SMSThreadRunnable());
+//        EmailThread emailThread = new EmailThread();
+        Thread emailThread = new Thread(new EmailThreadRunnable());
+//        ETACalculationThread etaCalculationThread = new ETACalculationThread();
+        Thread etaCalculationThread = new Thread(new ETAThreadRunnable());
 
         System.out.println("Task Started.\n");
 
