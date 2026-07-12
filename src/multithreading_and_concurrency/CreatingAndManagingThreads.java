@@ -5,6 +5,10 @@ package multithreading_and_concurrency;
 // Send an Email: This takes 3 seconds.
 // Send ETA (Estimated Time of Arrival): This takes 5 seconds.
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+
 // OrderService class
 class OrderService {
     // Main method simulates  placing an order and executing tasks sequentially
@@ -130,6 +134,20 @@ class ETAThreadRunnable implements Runnable {
     }
 }
 
+// Implementing Callable to calculate ETA (only this task requires a return value)
+class ETACalculator implements Callable<String> {
+    private final String location;
+    public ETACalculator(String location){
+        this.location = location;
+    }
+    public String call() throws InterruptedException {
+        System.out.println("[" + Thread.currentThread().getName() + "] Calculating ETA to: " + location);
+        Thread.sleep(5000); // Simulate 5-second delay for ETA calculation
+        System.out.println("Calculation ETA using Callable.");
+        return "ETA to " + location + ": 25 minutes"; // Return the ETA result
+    }
+}
+
 public class CreatingAndManagingThreads {
     static void main(String[] args) {
         // Initiating the order processing by calling the OrderService main method
@@ -146,7 +164,9 @@ public class CreatingAndManagingThreads {
 //        EmailThread emailThread = new EmailThread();
         Thread emailThread = new Thread(new EmailThreadRunnable());
 //        ETACalculationThread etaCalculationThread = new ETACalculationThread();
-        Thread etaCalculationThread = new Thread(new ETAThreadRunnable());
+//        Thread etaCalculationThread = new Thread(new ETAThreadRunnable());
+        FutureTask<String> etaCalculationRunnable = new FutureTask<>(new ETACalculator("BLR"));
+        Thread etaCalculationThread = new Thread(etaCalculationRunnable, "FutureTaskThread");
 
         System.out.println("Task Started.\n");
 
@@ -165,9 +185,13 @@ public class CreatingAndManagingThreads {
             smsThread.join();
             emailThread.join();
             etaCalculationThread.join();
+            String eta = etaCalculationRunnable.get();
+            System.out.println(eta);
             System.out.println("All tasks completed.");
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
     }
 }
