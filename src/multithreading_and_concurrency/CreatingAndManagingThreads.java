@@ -53,11 +53,78 @@ class OrderService {
     }
 }
 
+// SOLUTION
+// Creating a subclass of Thread to send SMS
+class SMSThread extends Thread{
+    @Override
+    public void run(){
+        try {
+            Thread.sleep(3000); // 2-second delay for SMS
+            System.out.println("SMS Sent using Thread.");
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// Creating a subclass of Thread to send Email
+class EmailThread extends Thread {
+    @Override
+    public void run() {
+        try {
+            Thread.sleep(2000); // 3-second delay for Email
+            System.out.println("Email Sent using Thread.");
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// Creating a subclass of Thread to calculate ETA
+class ETACalculationThread extends Thread {
+    @Override
+    public void run() {
+        try {
+            Thread.sleep(5000); // 5-second delay for ETA calculation
+            System.out.println("ETA Calculated using Thread. Estimated Time: 25 minutes.");
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
 public class CreatingAndManagingThreads {
     static void main(String[] args) {
         // Initiating the order processing by calling the OrderService main method
+//        try {
+//            OrderService.main(args); // Call the OrderService's main method
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+        // SOLUTION
+        // Create thread objects for SMS, Email, and ETA Calculation
+        SMSThread smsThread = new SMSThread();
+        EmailThread emailThread = new EmailThread();
+        ETACalculationThread etaCalculationThread = new ETACalculationThread();
+
+        System.out.println("Task Started.\n");
+
+        // start all threads
+        smsThread.start();
+        System.out.println("Task 1 ongoing...");
+
+        emailThread.start();
+        System.out.println("Task 2 ongoing...");
+
+        etaCalculationThread.start();
+        System.out.println("Task 3 ongoing...");
+
+        // Wait for all threads to finish
         try {
-            OrderService.main(args); // Call the OrderService's main method
+            smsThread.join();
+            emailThread.join();
+            etaCalculationThread.join();
+            System.out.println("All tasks completed.");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
