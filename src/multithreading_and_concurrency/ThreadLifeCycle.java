@@ -1,5 +1,41 @@
 package multithreading_and_concurrency;
 
+//                 new Thread()
+//                       │
+//                       ▼
+//                  +---------+
+//                  |   NEW   |
+//                  +---------+
+//                       │
+//                  start()
+//                       │
+//                       ▼
+//                 +-------------+
+//                 |  RUNNABLE   |
+//                 +-------------+
+//                   │   │    │
+//                   │   │    │
+//         waiting for  waiting  sleeping
+//           a lock     forever  for time
+//           ▼            ▼         ▼
+//      +---------+  +----------+ +---------------+
+//      | BLOCKED |  | WAITING  | | TIMED_WAITING |
+//      +---------+  +----------+ +---------------+
+//           │            │              │
+//           └────────────┴──────────────┘
+//                        │
+//                        ▼
+//                  +-------------+
+//                  |  RUNNABLE   |
+//                  +-------------+
+//                        │
+//                    run() ends
+//                        │
+//                        ▼
+//                 +-------------+
+//                 | TERMINATED  |
+//                 +-------------+
+
 public class ThreadLifeCycle {
     static void main() throws InterruptedException {
         Thread worker = new Thread(() -> {
