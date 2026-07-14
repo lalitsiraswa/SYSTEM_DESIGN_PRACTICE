@@ -14,10 +14,7 @@ package multithreading_and_concurrency;
 // Context Switching Overhead: Managing too many threads increases context switching, where the system saves and loads thread states.
 // This overhead reduces overall system efficiency as the CPU spends more time switching between threads than doing real computational work.
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 // Ride Matching Service Class
 class RideMatchingService{
@@ -110,6 +107,59 @@ class FutureExample{
 // It does not guarantee that all tasks will be stopped; it may just attempt to interrupt them.
 // It returns a list of tasks that have not yet started executing, so you can handle those tasks or retry them later if needed.
 
+// Fixed vs Cached vs Scheduled Thread Pools
+// 1. Fixed Thread Pool:
+// A Fixed Thread Pool creates a pool with a fixed number of threads. Once a task is submitted, the executor assigns it to an
+// available thread from the pool. If all threads are busy, new tasks are queued until a thread becomes available.
+// Use Case:
+// Applications where the number of tasks is known in advance, and the system should process a fixed number of
+// concurrent tasks (e.g., handling a fixed number of user requests simultaneously).
+// Advantages:
+// Predictable resource usage: The number of threads is fixed, so system resources are predictable.
+// Better control: You can control the maximum number of concurrent threads, avoiding system overload.
+// Disadvantages:
+// Limited scalability: If all threads are busy and the task queue fills up, tasks must wait in the queue, potentially delaying execution.
+// Underutilization: If fewer tasks are available than the number of threads, some threads may remain idle, wasting system resources.
+// 2. Cached Thread Pool:
+// A Cached Thread Pool creates new threads as needed but reuses previously constructed threads when they are available.
+// If a thread remains idle for more than 60 seconds, it is terminated and removed from the pool.
+// Use Case:
+// Short-lived tasks that are executed intermittently, such as handling burst traffic or processing small background
+// tasks where thread usage is unpredictable.
+// Advantages:
+// Scalable: Threads are created dynamically, and the pool can grow as needed to handle bursts of tasks.
+// Efficient resource use: Threads are reused whenever possible, reducing the cost of thread creation.
+// Disadvantages:
+// Potential for thread explosion: If the system experiences a high volume of tasks at once, a large number of threads may
+// be created, leading to resource exhaustion.
+// Less predictable resource usage: The number of threads can fluctuate significantly, making resource management more difficult.
+// 3. Scheduled Thread Pools
+// A Scheduled Thread Pool allows you to schedule tasks with fixed-rate or fixed-delay execution policies. It supports delayed
+// or periodic execution of tasks, making it useful for scheduling tasks at regular intervals or after a specific delay.
+
+class SessionCleaner {
+    public static void sessionCleanerMain(){
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        Runnable task = () -> {
+            System.out.println("Cleaning up expired sessions...");
+        };
+        scheduledExecutorService.scheduleAtFixedRate(task, 0, 5, TimeUnit.SECONDS);
+    }
+}
+
+// Explanation:
+// In the above example, a session-cleaning task is scheduled to run every 5 seconds, starting immediately (initialDelay = 0).
+// This is achieved using scheduleAtFixedRate(), which ensures periodic execution using a ScheduledExecutorService.
+// Use Case:
+// Applications that need to perform tasks at fixed intervals or after a certain delay, such as periodic data synchronization,
+// background maintenance tasks, or scheduled jobs.
+// Advantages:
+// Task scheduling: Allows scheduling tasks with a delay or periodic execution.
+// Flexible: Provides methods for scheduling tasks at fixed-rate intervals or with a fixed delay between executions.
+// Disadvantages:
+// Less efficient for short-lived tasks: Not ideal for tasks that are short-lived or don’t need to be scheduled periodically.
+// Thread management overhead: Managing scheduled tasks requires additional overhead for tracking execution times and intervals.
+
 public class ThreadPoolsAndExecutors {
     static void main() throws ExecutionException, InterruptedException {
 //        RideMatchingService rideService1 = new RideMatchingService();
@@ -120,6 +170,7 @@ public class ThreadPoolsAndExecutors {
 //        System.out.println("task2 running...");
 
 //        EmailService.emailServiceMain();
-        FutureExample.futureExampleMain();
+//        FutureExample.futureExampleMain();
+        SessionCleaner.sessionCleanerMain();
     }
 }
