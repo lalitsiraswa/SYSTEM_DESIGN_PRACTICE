@@ -95,6 +95,21 @@ class FutureExample{
     }
 }
 
+// Shutdown Methods in Executor Class:
+// 1. shutdown() method:
+// Purpose: Initiates an orderly shutdown of the executor service. Once this method is called, the executor will stop accepting new tasks but will continue to process the tasks that have already been submitted.
+// Return Type: void (No return value)
+// Usage:
+// shutdown() is typically used when you want to allow the executor to finish executing all tasks in the queue before shutting down.
+// It ensures that the executor doesn't accept any new tasks but still processes the tasks that have already been submitted.
+// 2. shutdownNow() method:
+// Purpose: Attempts to stop all actively executing tasks, halts the processing of waiting tasks, and returns a list of the tasks that were waiting to be executed.
+// Return Type: List<Runnable> — Returns a list of the tasks that were in the executor’s queue but were not executed.
+// Usage:
+// shutdownNow() tries to immediately stop all tasks, including those that are currently running.
+// It does not guarantee that all tasks will be stopped; it may just attempt to interrupt them.
+// It returns a list of tasks that have not yet started executing, so you can handle those tasks or retry them later if needed.
+
 public class ThreadPoolsAndExecutors {
     static void main() throws ExecutionException, InterruptedException {
 //        RideMatchingService rideService1 = new RideMatchingService();
