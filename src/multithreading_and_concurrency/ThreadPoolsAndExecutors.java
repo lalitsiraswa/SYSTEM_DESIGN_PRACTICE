@@ -14,6 +14,9 @@ package multithreading_and_concurrency;
 // Context Switching Overhead: Managing too many threads increases context switching, where the system saves and loads thread states.
 // This overhead reduces overall system efficiency as the CPU spends more time switching between threads than doing real computational work.
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 // Ride Matching Service Class
 class RideMatchingService{
     // Method handling ride request
@@ -33,14 +36,41 @@ class RideMatchingService{
     }
 }
 
+// Executor Framework
+// Using the newFixedThreadPool to manage threads
+
+class EmailService{
+    // Thread pool with 10 threads
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(10);
+    // Method to send email
+    public static void sendEmail(String recipient){
+        EXECUTOR_SERVICE.execute(() -> {
+            System.out.println("Sending email to " + recipient + " on " + Thread.currentThread().getName());
+            try{
+                // Simulate dummy work (sending an email)
+                Thread.sleep(1000); // Simulate delay;
+            } catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+            }
+            System.out.println("Email sent to " + recipient);
+        });
+    }
+    // Main method to simulate sending multiple emails
+    public static void main(){
+        for(int i = 1; i <= 25; i++){
+            sendEmail("User" + i + "@gmail.com"); // Send email to 25 users
+        }
+        EXECUTOR_SERVICE.shutdown(); // Gracefully shut down the executor
+    }
+}
+
 public class ThreadPoolsAndExecutors {
     static void main() {
-        RideMatchingService rideService1 = new RideMatchingService();
-        RideMatchingService rideService2 = new RideMatchingService();
-        rideService1.requestRide("Raj");
-        System.out.println("task1 running...");
-        rideService2.requestRide("John Doe");
-        System.out.println("task2 running...");
-
+//        RideMatchingService rideService1 = new RideMatchingService();
+//        RideMatchingService rideService2 = new RideMatchingService();
+//        rideService1.requestRide("Raj");
+//        System.out.println("task1 running...");
+//        rideService2.requestRide("John Doe");
+//        System.out.println("task2 running...");
     }
 }
