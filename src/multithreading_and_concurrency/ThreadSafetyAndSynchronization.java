@@ -103,6 +103,24 @@ class FixRaceConditionDemo{
     }
 }
 
+// Monitor Locks:-
+// At the core of synchronization in Java lies the concept of Monitor Locks, which manage access by allowing only one thread to
+// execute a synchronized section at any given time. Let’s take a closer look at how Monitor Locks work through the given key points.
+// Key Points
+// One lock per object (plus one per Class for static sync).
+// Re-entrant: The same thread can enter the lock multiple times without deadlocking itself.
+// Queueing: If a lock is taken, other threads wait (block) until it’s released.
+// Scope matters:
+// > synchronized instance method → lock on this.
+// > synchronized static method → lock on the Class object.
+// > synchronized (obj) block → lock on obj.
+// Drawback:-
+// Using monitor locks via synchronized removes data races, but over-locking can slow your app or cause deadlocks if locks
+// are acquired in inconsistent order.
+// While monitor locks help manage exclusive access, they also introduce overhead by forcing threads to wait,
+// especially when only visibility of changes - not atomicity - is needed.
+// In such cases, where synchronization might be too heavy, Java provides a lighter option: the volatile keyword.
+
 public class ThreadSafetyAndSynchronization {
     static void main() throws InterruptedException {
 //        RaceConditionDemo.raceConditionDemoMain();
