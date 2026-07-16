@@ -160,6 +160,34 @@ class SessionCleaner {
 // Less efficient for short-lived tasks: Not ideal for tasks that are short-lived or don’t need to be scheduled periodically.
 // Thread management overhead: Managing scheduled tasks requires additional overhead for tracking execution times and intervals.
 
+// Below code is not thread safe.
+// You will get inconsistent results
+class ExecutorServiceExample{
+    private final ExecutorService executorService = Executors.newFixedThreadPool(2);
+    private int count = 0;
+    public void executorServiceExampleMain() throws ExecutionException, InterruptedException {
+        Runnable task = () ->{
+            System.out.println(Thread.currentThread().getName());
+            for(int i = 1; i <= 10000; i++){
+                count++;
+            }
+        };
+        Future<?> f1 = executorService.submit(task);
+        Future<?> f2 = executorService.submit(task);
+        // get() waits until the task finishes.
+        f1.get();
+        f2.get();
+        System.out.println("COUNT: " + count);
+        count = 0;
+        f1 = executorService.submit(task);
+        f2 = executorService.submit(task);
+        f1.get();
+        f2.get();
+        System.out.println("COUNT: " + count);
+        executorService.shutdown();
+    }
+}
+
 public class ThreadPoolsAndExecutors {
     static void main() throws ExecutionException, InterruptedException {
 //        RideMatchingService rideService1 = new RideMatchingService();
@@ -171,6 +199,9 @@ public class ThreadPoolsAndExecutors {
 
 //        EmailService.emailServiceMain();
 //        FutureExample.futureExampleMain();
-        SessionCleaner.sessionCleanerMain();
+//        SessionCleaner.sessionCleanerMain();
+
+        ExecutorServiceExample executorServiceExample = new ExecutorServiceExample();
+        executorServiceExample.executorServiceExampleMain();
     }
 }
