@@ -121,9 +121,47 @@ class FixRaceConditionDemo{
 // especially when only visibility of changes - not atomicity - is needed.
 // In such cases, where synchronization might be too heavy, Java provides a lighter option: the volatile keyword.
 
+// volatile Keyword
+// The volatile keyword in Java is used to ensure visibility, not atomicity. It tells the JVM that a variable's value may be
+// updated by multiple threads and that every read or write should go directly to and from main memory, rather than being cached in a thread’s local memory (CPU cache).
+// What it Guarantees:
+// 1. visibility
+// Any update made to a volatile variable by one thread becomes immediately visible to all other threads.
+// Without volatile: one thread might keep reading an old value from its local cache.
+// With volatile: all threads will always see the latest value in memory.
+// 2. No Caching
+// A volatile variable is always read from and written to main memory. This ensures there’s no outdated copy sitting in a CPU
+// register or thread-local cache.
+// 3. Not Atomic
+// Even though volatile ensures visibility, it does not make operations atomic. For example, the following is not thread-safe
+// even if count is declared as volatile: This is because count++ involves three steps (read, modify, write), and volatile cannot
+// stop two threads from performing these steps simultaneously, leading to race conditions.
+
+class VolatileExample{
+    volatile int count = 0;
+    public void volatileExampleMain() throws InterruptedException {
+        Runnable task = () -> {
+            for(int i = 1; i <= 1000; i++){
+                count++;
+            }
+        };
+        Thread t1 = new Thread(task);
+        Thread t2 = new Thread(task);
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        // Result will be inconsistent
+        System.out.println("COUNT: " + count);
+    }
+}
+
 public class ThreadSafetyAndSynchronization {
     static void main() throws InterruptedException {
 //        RaceConditionDemo.raceConditionDemoMain();
-        FixRaceConditionDemo.fixRaceConditionDemoMain();
+//        FixRaceConditionDemo.fixRaceConditionDemoMain();
+
+        VolatileExample volatileExample = new VolatileExample();
+        volatileExample.volatileExampleMain();
     }
 }
