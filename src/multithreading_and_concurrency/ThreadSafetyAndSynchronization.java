@@ -137,11 +137,13 @@ class FixRaceConditionDemo{
 // even if count is declared as volatile: This is because count++ involves three steps (read, modify, write), and volatile cannot
 // stop two threads from performing these steps simultaneously, leading to race conditions.
 
+// Below code is not thread safe.
+// You will get inconsistent results
 class VolatileExample{
     volatile int count = 0;
     public void volatileExampleMain() throws InterruptedException {
         Runnable task = () -> {
-            for(int i = 1; i <= 1000; i++){
+            for(int i = 1; i <= 2000; i++){
                 count++;
             }
         };
