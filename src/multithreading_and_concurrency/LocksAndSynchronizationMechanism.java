@@ -48,7 +48,7 @@ class TicketBooking {
         } finally {
             // Always release the lock in a finally block
             System.out.println(user + " is releasing the lock.");
-            lock.unlock();
+            lock.unlock(); // Must always execute (hence the finally block) to avoid deadlocks.
         }
     }
 }
