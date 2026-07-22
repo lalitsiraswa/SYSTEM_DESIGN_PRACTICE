@@ -20,10 +20,9 @@ package multithreading_and_concurrency;
 // Such limitations make synchronized unsuitable for modern concurrent applications where responsiveness and control are essential.
 // To solve this issue, a better alternative like a Mutex can be used.
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 class TicketBooking {
@@ -53,20 +52,85 @@ class TicketBooking {
     }
 }
 
+// Booking system that waits up to 2 s for a lock
+class TicketBookingTryLock {
+    // shared resource: seat count
+    private int availableSeats = 5;
+    // exclusive lock protecting seat updates
+    private final ReentrantLock lock = new ReentrantLock();
+    // attempts to book a ticket for the given user
+    public void bookTicket(String user) {
+        LocalTime currentTime = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String formattedTime = currentTime.format(formatter);
+        System.out.println(user + " is trying to book at time: " + formattedTime);
+        // remember whether we actually got the lock
+        boolean lockAcquired = false;
+        try {
+            // wait up to 2 s before giving up
+            lockAcquired = lock.tryLock(5, TimeUnit.SECONDS);
+            if (lockAcquired) {
+                System.out.println(user + " acquired lock.");
+                // critical section – safe to inspect/update seats
+                if (availableSeats > 0) {
+                    System.out.println(user + " successfully booked the ticket.");
+                    availableSeats--;
+                } else {
+                    System.out.println(user + " could not book the ticket. No seats left.");
+                }
+                // simulate a long operation that holds the lock
+                // this helps demonstrate the timeout behavior for the next user
+                Thread.sleep(5000);
+            } else {
+                currentTime = LocalTime.now();
+                formattedTime = currentTime.format(formatter);
+                System.out.println(user + " could not acquire lock. Try again at time: " + formattedTime);
+            }
+        }
+        catch (InterruptedException e) {
+            // restore interrupt status and log
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+        finally {
+            // release only if we were the owner
+            if (lockAcquired) {
+                System.out.println(user + " is releasing the lock.");
+                lock.unlock();
+            }
+        }
+    }
+}
+
 public class LocksAndSynchronizationMechanism {
     static void main() throws ExecutionException, InterruptedException {
-        TicketBooking booking = new TicketBooking();
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
-        Future<?> f1 = executorService.submit(() -> { booking.bookTicket("Lalit"); });
-        Future<?> f2 = executorService.submit(() -> { booking.bookTicket("Lavik"); });
-        Future<?> f3 = executorService.submit(() -> { booking.bookTicket("Lucky"); });
-        Future<?> f4 = executorService.submit(() -> { booking.bookTicket("Sonu"); });
-        Future<?> f5 = executorService.submit(() -> { booking.bookTicket("Jyoti"); });
+//        TicketBooking booking = new TicketBooking();
+//        ExecutorService executorService = Executors.newFixedThreadPool(5);
+//        Future<?> f1 = executorService.submit(() -> { booking.bookTicket("Lalit"); });
+//        Future<?> f2 = executorService.submit(() -> { booking.bookTicket("Lavik"); });
+//        Future<?> f3 = executorService.submit(() -> { booking.bookTicket("Lucky"); });
+//        Future<?> f4 = executorService.submit(() -> { booking.bookTicket("Sonu"); });
+//        Future<?> f5 = executorService.submit(() -> { booking.bookTicket("Jyoti"); });
+//        f1.get();
+//        f2.get();
+//        f3.get();
+//        f4.get();
+//        f5.get();
+//        executorService.shutdown();
+
+        // ------------
+        TicketBookingTryLock ticketBookingTryLock = new TicketBookingTryLock();
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        Future<?> f1 = executorService.submit(() -> { ticketBookingTryLock.bookTicket("Lalit"); });
+        Future<?> f2 = executorService.submit(() -> { ticketBookingTryLock.bookTicket("Lavik"); });
+//        Future<?> f3 = executorService.submit(() -> { ticketBookingTryLock.bookTicket("Lucky"); });
+//        Future<?> f4 = executorService.submit(() -> { ticketBookingTryLock.bookTicket("Sonu"); });
+//        Future<?> f5 = executorService.submit(() -> { ticketBookingTryLock.bookTicket("Jyoti"); });
         f1.get();
         f2.get();
-        f3.get();
-        f4.get();
-        f5.get();
+//        f3.get();
+//        f4.get();
+//        f5.get();
         executorService.shutdown();
     }
 }
