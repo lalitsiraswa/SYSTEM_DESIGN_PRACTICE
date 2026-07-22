@@ -26,24 +26,29 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 
-class TicketBooking{
-    private int availableSeats = 1;
-    private final ReentrantLock reentrantLock = new ReentrantLock();
-    public void bookTicket(String user){
+class TicketBooking {
+    // Number of seats available
+    private int availableSeats = 3;
+    // Dedicated lock for this shared resource
+    private final ReentrantLock lock = new ReentrantLock();
+    // Public method to book a ticket
+    public void bookTicket(String user) {
         System.out.println(user + " is trying to book...");
-        reentrantLock.lock(); // blocks if already held by another thread
-        try{
+        // Acquire the lock – blocks until available
+        lock.lock();
+        try {
             System.out.println(user + " acquired lock.");
-            if(availableSeats > 0){
+            // Critical section: check and update shared state
+            if (availableSeats > 0) {
                 System.out.println(user + " successfully booked the ticket.");
                 availableSeats--;
-            }
-            else{
+            } else {
                 System.out.println(user + " could not book the ticket. No seats left.");
             }
         } finally {
+            // Always release the lock in a finally block
             System.out.println(user + " is releasing the lock.");
-            reentrantLock.unlock();
+            lock.unlock();
         }
     }
 }
